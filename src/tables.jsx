@@ -112,20 +112,27 @@ export default function Tables() {
         d.setUTCMilliseconds(unixEpoch);
         d = d.toISOString().split('T')[0];
         const [year, month, day] = d.split('-');
-        const result = [month, day, year].join('/');
+        const result = [day, month, year].join('/');
         return result;
     }
 
     const copyRows = (row1, row2) => {
         let copied = '<table><tr>';
-        row1.forEach((item, i) => {
-            (item != 0 && i != 0) && (copied = copied + `<td>${item}</td>`);
-        });
-        copied = copied + '</tr><tr>';
-        row2.forEach((item, i) => {
-            (item != 0 && i != 0) && (copied = copied + `<td>${item}</td>`);
-        });
-        copied = copied + '</tr></table>';
+        if (row1) {
+            row1.forEach((item, i) => {
+                (item != 0) && (copied = copied + `<td>${item}</td>`);
+            });
+            copied = copied + '</tr>';
+        }
+            
+        if (row2) {
+            copied = copied + '<tr>';
+            row2.forEach((item, i) => {
+                (item != 0) && (copied = copied + `<td>${item}</td>`);
+            });
+            copied = copied + '</tr>';
+        }
+        copied = copied + '</table>';
         const blob = new Blob([copied], { type: "text/html" });
         const tableHtml = new window.ClipboardItem({ "text/html": blob });
 
@@ -192,11 +199,11 @@ export default function Tables() {
                                         <TableHead>
                                             <TableRow>
                                                 <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Date</TableCell>
-                                                <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Value</TableCell>
                                                 <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Open</TableCell>
                                                 <TableCell style={{backgroundColor: '#e9ecef'}} align="right">High</TableCell>
                                                 <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Low</TableCell>
                                                 <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Close</TableCell>
+                                                <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Volume</TableCell>
                                                 <TableCell align="right" style={{color: 'blue',backgroundColor: '#e9ecef'}}>Acciones</TableCell>
                                             </TableRow>
                                         </TableHead>
@@ -213,8 +220,9 @@ export default function Tables() {
                                                                 <TableCell className='table-cell' align="right">{crypto.data[0][3].toLocaleString("en-US")}</TableCell>
                                                                 <TableCell className='table-cell' align="right">{crypto.data[0][4].toLocaleString("en-US")}</TableCell>
                                                                 <TableCell className='table-cell' align="right">{crypto.data[0][5].toLocaleString("en-US")}</TableCell>
-                                                                <TableCell className='table-cell' align="right" rowSpan={2}>
-                                                                    <Button variant='outlined' onClick={() => copyRows(crypto.data[0], crypto.data[1])}>Copiar</Button>
+                                                                <TableCell className='table-cell' align="right" rowSpan={2} style={{textAlign: 'center'}}>
+                                                                    <Button style={{display: 'block', width: '200px'}} variant='outlined' onClick={() => copyRows(crypto.data[1])}>Copiar 1 dia</Button>
+                                                                    <Button style={{display: 'block', width: '200px'}} variant='outlined' onClick={() => copyRows(crypto.data[0], crypto.data[1])}>Copiar 2 dias</Button>
                                                                 </TableCell>
                                                             </TableRow>
                                                             <TableRow className='table-row'>
@@ -248,11 +256,11 @@ export default function Tables() {
                                                 <TableHead>
                                                     <TableRow>
                                                         <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Date</TableCell>
-                                                        <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Value</TableCell>
                                                         <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Open</TableCell>
                                                         <TableCell style={{backgroundColor: '#e9ecef'}} align="right">High</TableCell>
                                                         <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Low</TableCell>
                                                         <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Close</TableCell>
+                                                        <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Volume</TableCell>
                                                     </TableRow>
                                                 </TableHead>
                                                 {(cryptosData.length != 0) ?

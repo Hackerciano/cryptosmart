@@ -42,6 +42,18 @@ const cryptos = [
         backPos: '-392px'
     },
     {
+        name: 'Avalanche',
+        shortName: 'AVAX',
+        pairID: '1177190',
+        backPos: '-392px'
+    },
+    {
+        name: 'Aave',
+        shortName: 'AAVE',
+        pairID: '1061509',
+        backPos: '-392px'
+    },
+    {
         name: 'IOTA',
         shortName: 'MIOTA',
         pairID: '1061449',
@@ -54,9 +66,9 @@ const cryptos = [
         backPos: '-392px'
     },
     {
-        name: 'Ravecoin',
-        shortName: 'VEN',
-        pairID: '1094142',
+        name: 'VeChain',
+        shortName: 'VET',
+        pairID: '1061537',
         backPos: '-392px'
     },
     {
