@@ -25,6 +25,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
+
 const TabPanel = (props) => {
     const { children, value, index, ...other } = props;
 
@@ -117,12 +118,12 @@ export default function Tables() {
 
     const copyRows = (row1, row2) => {
         let copied = '<table><tr>';
-        row1.forEach(item => {
-            (item != 0) && (copied = copied + `<td>${item}</td>`);
+        row1.forEach((item, i) => {
+            (item != 0 && i != 0) && (copied = copied + `<td>${item}</td>`);
         });
         copied = copied + '</tr><tr>';
-        row2.forEach(item => {
-            (item != 0) && (copied = copied + `<td>${item}</td>`);
+        row2.forEach((item, i) => {
+            (item != 0 && i != 0) && (copied = copied + `<td>${item}</td>`);
         });
         copied = copied + '</tr></table>';
         const blob = new Blob([copied], { type: "text/html" });
