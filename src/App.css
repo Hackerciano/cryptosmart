@@ -36,3 +36,11 @@
     transform: rotate(360deg);
   }
 }
+
+.table-row:hover {
+  background-color: #DDF8F0;
+}
+
+.table-cell:hover {
+  background-color: #97EAD2;
+}
