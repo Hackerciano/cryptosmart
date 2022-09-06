@@ -64,6 +64,7 @@ export default function Tables() {
     const [value, setValue] = React.useState(0);
     const [open, setOpen] = React.useState(false);
     const [cryptosData, setCryptosData] = React.useState([]);
+    const [maxLength, setMaxLength] = React.useState(0);
 
     useEffect(() => {
         //updateCryptos();
@@ -92,6 +93,7 @@ export default function Tables() {
             tempData[i]['data'] = newValue;
         }
         setCryptosData(tempData);
+        setMaxLength(tempData[0].data.length);
         setOpen(false);
     }
 
@@ -214,24 +216,24 @@ export default function Tables() {
                                                                 <TableCell colSpan={7} align='center'>{crypto.name} - {crypto.shortName}</TableCell>
                                                             </TableRow>
                                                             <TableRow className='table-row'>
-                                                                <TableCell className='table-cell' align="right">{crypto.data[0][0]}</TableCell>
-                                                                <TableCell className='table-cell' align="right">{crypto.data[0][1].toLocaleString("en-US")}</TableCell>
-                                                                <TableCell className='table-cell' align="right">{crypto.data[0][2].toLocaleString("en-US")}</TableCell>
-                                                                <TableCell className='table-cell' align="right">{crypto.data[0][3].toLocaleString("en-US")}</TableCell>
-                                                                <TableCell className='table-cell' align="right">{crypto.data[0][4].toLocaleString("en-US")}</TableCell>
-                                                                <TableCell className='table-cell' align="right">{crypto.data[0][5].toLocaleString("en-US")}</TableCell>
+                                                                <TableCell className='table-cell' align="right">{crypto.data[maxLength-2][0]}</TableCell>
+                                                                <TableCell className='table-cell' align="right">{crypto.data[maxLength-2][1].toLocaleString("en-US")}</TableCell>
+                                                                <TableCell className='table-cell' align="right">{crypto.data[maxLength-2][2].toLocaleString("en-US")}</TableCell>
+                                                                <TableCell className='table-cell' align="right">{crypto.data[maxLength-2][3].toLocaleString("en-US")}</TableCell>
+                                                                <TableCell className='table-cell' align="right">{crypto.data[maxLength-2][4].toLocaleString("en-US")}</TableCell>
+                                                                <TableCell className='table-cell' align="right">{crypto.data[maxLength-2][5].toLocaleString("en-US")}</TableCell>
                                                                 <TableCell className='table-cell' align="right" rowSpan={2} style={{textAlign: 'center'}}>
                                                                     <Button style={{display: 'block', width: '200px'}} variant='outlined' onClick={() => copyRows(crypto.data[1])}>Copiar 1 dia</Button>
                                                                     <Button style={{display: 'block', width: '200px'}} variant='outlined' onClick={() => copyRows(crypto.data[0], crypto.data[1])}>Copiar 2 dias</Button>
                                                                 </TableCell>
                                                             </TableRow>
                                                             <TableRow className='table-row'>
-                                                                <TableCell className='table-cell' align="right">{crypto.data[1][0]}</TableCell>
-                                                                <TableCell className='table-cell' align="right">{crypto.data[1][1].toLocaleString("en-US")}</TableCell>
-                                                                <TableCell className='table-cell' align="right">{crypto.data[1][2].toLocaleString("en-US")}</TableCell>
-                                                                <TableCell className='table-cell' align="right">{crypto.data[1][3].toLocaleString("en-US")}</TableCell>
-                                                                <TableCell className='table-cell' align="right">{crypto.data[1][4].toLocaleString("en-US")}</TableCell>
-                                                                <TableCell className='table-cell' align="right">{crypto.data[1][5].toLocaleString("en-US")}</TableCell>
+                                                                <TableCell className='table-cell' align="right">{crypto.data[maxLength-3][0]}</TableCell>
+                                                                <TableCell className='table-cell' align="right">{crypto.data[maxLength-3][1].toLocaleString("en-US")}</TableCell>
+                                                                <TableCell className='table-cell' align="right">{crypto.data[maxLength-3][2].toLocaleString("en-US")}</TableCell>
+                                                                <TableCell className='table-cell' align="right">{crypto.data[maxLength-3][3].toLocaleString("en-US")}</TableCell>
+                                                                <TableCell className='table-cell' align="right">{crypto.data[maxLength-3][4].toLocaleString("en-US")}</TableCell>
+                                                                <TableCell className='table-cell' align="right">{crypto.data[maxLength-3][5].toLocaleString("en-US")}</TableCell>
                                                                 
                                                             </TableRow>
                                                         </TableBody>
