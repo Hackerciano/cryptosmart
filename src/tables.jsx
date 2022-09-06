@@ -223,8 +223,8 @@ export default function Tables() {
                                                                 <TableCell className='table-cell' align="right">{crypto.data[maxLength-2][4].toLocaleString("en-US")}</TableCell>
                                                                 <TableCell className='table-cell' align="right">{crypto.data[maxLength-2][5].toLocaleString("en-US")}</TableCell>
                                                                 <TableCell className='table-cell' align="right" rowSpan={2} style={{textAlign: 'center'}}>
-                                                                    <Button style={{display: 'block', width: '200px'}} variant='outlined' onClick={() => copyRows(crypto.data[1])}>Copiar 1 dia</Button>
-                                                                    <Button style={{display: 'block', width: '200px'}} variant='outlined' onClick={() => copyRows(crypto.data[0], crypto.data[1])}>Copiar 2 dias</Button>
+                                                                    <Button style={{display: 'block', width: '200px'}} variant='outlined' onClick={() => copyRows(crypto.data[maxLength-2])}>Copiar 1 dia</Button>
+                                                                    <Button style={{display: 'block', width: '200px'}} variant='outlined' onClick={() => copyRows(crypto.data[maxLength-3], crypto.data[maxLength-2])}>Copiar 2 dias</Button>
                                                                 </TableCell>
                                                             </TableRow>
                                                             <TableRow className='table-row'>
