@@ -92,7 +92,7 @@ const cryptos = [
     {
         name: 'Pundi X[old]',
         shortName: 'NPXS',
-        pairID: '1094135',
+        pairID: '1075261',
         backPos: '-392px'
     },
     {
