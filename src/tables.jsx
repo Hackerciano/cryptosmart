@@ -86,9 +86,6 @@ export default function Tables() {
             const crypto = tempData[i];
             const cryptoData = await callInvesting(crypto.pairID, 'P1W', 'P1D', 120);
             let newValue = cryptoData.data.data;
-            newValue = newValue.sort((a, b) => {
-                return b[0] - a[0];
-            });
             // Format date
             newValue.forEach(value => {
                 value[0] = getDate(value[0]);
@@ -219,24 +216,24 @@ export default function Tables() {
                                                                 <TableCell colSpan={7} align='center'>{crypto.name} - {crypto.shortName}</TableCell>
                                                             </TableRow>
                                                             <TableRow className='table-row'>
-                                                                <TableCell className='table-cell' align="right">{crypto.data[2][0]}</TableCell>
-                                                                <TableCell className='table-cell' align="right">{crypto.data[2][1].toLocaleString("en-US")}</TableCell>
-                                                                <TableCell className='table-cell' align="right">{crypto.data[2][2].toLocaleString("en-US")}</TableCell>
-                                                                <TableCell className='table-cell' align="right">{crypto.data[2][3].toLocaleString("en-US")}</TableCell>
-                                                                <TableCell className='table-cell' align="right">{crypto.data[2][4].toLocaleString("en-US")}</TableCell>
-                                                                <TableCell className='table-cell' align="right">{crypto.data[2][5].toLocaleString("en-US")}</TableCell>
+                                                                <TableCell className='table-cell' align="right">{crypto.data[maxLength-2][0]}</TableCell>
+                                                                <TableCell className='table-cell' align="right">{crypto.data[maxLength-2][1].toLocaleString("en-US")}</TableCell>
+                                                                <TableCell className='table-cell' align="right">{crypto.data[maxLength-2][2].toLocaleString("en-US")}</TableCell>
+                                                                <TableCell className='table-cell' align="right">{crypto.data[maxLength-2][3].toLocaleString("en-US")}</TableCell>
+                                                                <TableCell className='table-cell' align="right">{crypto.data[maxLength-2][4].toLocaleString("en-US")}</TableCell>
+                                                                <TableCell className='table-cell' align="right">{crypto.data[maxLength-2][5].toLocaleString("en-US")}</TableCell>
                                                                 <TableCell className='table-cell' align="right" rowSpan={2} style={{textAlign: 'center'}}>
-                                                                    <Button style={{display: 'block', width: '200px'}} variant='outlined' onClick={() => copyRows(crypto.data[2])}>Copiar 1 dia</Button>
-                                                                    <Button style={{display: 'block', width: '200px'}} variant='outlined' onClick={() => copyRows(crypto.data[2], crypto.data[1])}>Copiar 2 dias</Button>
+                                                                    <Button style={{display: 'block', width: '200px'}} variant='outlined' onClick={() => copyRows(crypto.data[maxLength-2])}>Copiar 1 dia</Button>
+                                                                    <Button style={{display: 'block', width: '200px'}} variant='outlined' onClick={() => copyRows(crypto.data[maxLength-2], crypto.data[maxLength-1])}>Copiar 2 dias</Button>
                                                                 </TableCell>
                                                             </TableRow>
                                                             <TableRow className='table-row'>
-                                                                <TableCell className='table-cell' align="right">{crypto.data[1][0]}</TableCell>
-                                                                <TableCell className='table-cell' align="right">{crypto.data[1][1].toLocaleString("en-US")}</TableCell>
-                                                                <TableCell className='table-cell' align="right">{crypto.data[1][2].toLocaleString("en-US")}</TableCell>
-                                                                <TableCell className='table-cell' align="right">{crypto.data[1][3].toLocaleString("en-US")}</TableCell>
-                                                                <TableCell className='table-cell' align="right">{crypto.data[1][4].toLocaleString("en-US")}</TableCell>
-                                                                <TableCell className='table-cell' align="right">{crypto.data[1][5].toLocaleString("en-US")}</TableCell>
+                                                                <TableCell className='table-cell' align="right">{crypto.data[maxLength-1][0]}</TableCell>
+                                                                <TableCell className='table-cell' align="right">{crypto.data[maxLength-1][1].toLocaleString("en-US")}</TableCell>
+                                                                <TableCell className='table-cell' align="right">{crypto.data[maxLength-1][2].toLocaleString("en-US")}</TableCell>
+                                                                <TableCell className='table-cell' align="right">{crypto.data[maxLength-1][3].toLocaleString("en-US")}</TableCell>
+                                                                <TableCell className='table-cell' align="right">{crypto.data[maxLength-1][4].toLocaleString("en-US")}</TableCell>
+                                                                <TableCell className='table-cell' align="right">{crypto.data[maxLength-1][5].toLocaleString("en-US")}</TableCell>
                                                                 
                                                             </TableRow>
                                                         </TableBody>
