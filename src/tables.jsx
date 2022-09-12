@@ -220,19 +220,19 @@ export default function Tables() {
                                                                 (crypto.shortName == 'NPXS') ? crypto.data[maxLength-2][0] : crypto.data[maxLength-3][0]
                                                                 }</TableCell>
                                                                 <TableCell className='table-cell' align="right">{
-                                                                    (crypto.shortName == 'NPXS') ? crypto.data[maxLength-2][1].toLocaleString("en-US") : crypto.data[maxLength-3][1].toLocaleString("en-US")
+                                                                    (crypto.data[maxLength-3][1] < 1) ? crypto.data[maxLength-3][1] : crypto.data[maxLength-3][1].toLocaleString("en-US")
                                                                 }</TableCell>
                                                                 <TableCell className='table-cell' align="right">{
-                                                                    (crypto.shortName == 'NPXS') ? crypto.data[maxLength-2][2].toLocaleString("en-US") : crypto.data[maxLength-3][2].toLocaleString("en-US")
+                                                                    (crypto.data[maxLength-3][2] < 1) ? crypto.data[maxLength-3][2] : crypto.data[maxLength-3][2].toLocaleString("en-US")
                                                                 }</TableCell>
                                                                 <TableCell className='table-cell' align="right">{
-                                                                    (crypto.shortName == 'NPXS') ? crypto.data[maxLength-2][3].toLocaleString("en-US") : crypto.data[maxLength-3][3].toLocaleString("en-US")
+                                                                    (crypto.data[maxLength-3][3] < 1) ? crypto.data[maxLength-3][3] : crypto.data[maxLength-3][3].toLocaleString("en-US")
                                                                 }</TableCell>
                                                                 <TableCell className='table-cell' align="right">{
-                                                                    (crypto.shortName == 'NPXS') ? crypto.data[maxLength-2][4].toLocaleString("en-US") : crypto.data[maxLength-3][4].toLocaleString("en-US")
+                                                                    (crypto.data[maxLength-3][4] < 1) ? crypto.data[maxLength-3][4] : crypto.data[maxLength-3][4].toLocaleString("en-US")
                                                                 }</TableCell>
                                                                 <TableCell className='table-cell' align="right">{
-                                                                    (crypto.shortName == 'NPXS') ? crypto.data[maxLength-2][5].toLocaleString("en-US") : crypto.data[maxLength-3][5].toLocaleString("en-US")
+                                                                    (crypto.data[maxLength-3][5] < 1) ? crypto.data[maxLength-3][5] : crypto.data[maxLength-3][5].toLocaleString("en-US")
                                                                 }</TableCell>
                                                                     {(crypto.shortName == 'NPXS') ?
                                                                     <TableCell className='table-cell' align="right" rowSpan={2} style={{textAlign: 'center'}}>
@@ -248,22 +248,22 @@ export default function Tables() {
                                                             </TableRow>
                                                             <TableRow className='table-row'>
                                                                 <TableCell className='table-cell' align="right">{
-                                                                    (crypto.shortName == 'NPXS') ? crypto.data[maxLength-1][0] : crypto.data[maxLength-2][0]
+                                                                    crypto.data[maxLength-2][0]
                                                                 }</TableCell>
                                                                 <TableCell className='table-cell' align="right">{
-                                                                    (crypto.shortName == 'NPXS') ? crypto.data[maxLength-1][1] : crypto.data[maxLength-2][1]
+                                                                    (crypto.data[maxLength-2][1] < 1) ? crypto.data[maxLength-2][1] : crypto.data[maxLength-2][1].toLocaleString("en-US")
                                                                 }</TableCell>
                                                                 <TableCell className='table-cell' align="right">{
-                                                                    (crypto.shortName == 'NPXS') ? crypto.data[maxLength-1][2] : crypto.data[maxLength-2][2]
+                                                                    (crypto.data[maxLength-2][2] < 1) ? crypto.data[maxLength-2][2] : crypto.data[maxLength-2][2].toLocaleString("en-US")
                                                                 }</TableCell>
                                                                 <TableCell className='table-cell' align="right">{
-                                                                    (crypto.shortName == 'NPXS') ? crypto.data[maxLength-1][3] : crypto.data[maxLength-2][3]
+                                                                    (crypto.data[maxLength-2][3] < 1) ? crypto.data[maxLength-2][3] : crypto.data[maxLength-2][3].toLocaleString("en-US")
                                                                 }</TableCell>
                                                                 <TableCell className='table-cell' align="right">{
-                                                                    (crypto.shortName == 'NPXS') ? crypto.data[maxLength-1][4] : crypto.data[maxLength-2][4]
+                                                                    (crypto.data[maxLength-2][4] < 1) ? crypto.data[maxLength-2][4] : crypto.data[maxLength-2][4].toLocaleString("en-US")
                                                                 }</TableCell>
                                                                 <TableCell className='table-cell' align="right">{
-                                                                    (crypto.shortName == 'NPXS') ? crypto.data[maxLength-1][5] : crypto.data[maxLength-2][5]
+                                                                    (crypto.data[maxLength-2][5] < 1) ? crypto.data[maxLength-2][5] : crypto.data[maxLength-2][5].toLocaleString("en-US")
                                                                 }</TableCell>
                                                                 
                                                             </TableRow>
