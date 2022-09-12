@@ -90,9 +90,15 @@ const cryptos = [
         backPos: '-392px'
     },
     {
-        name: 'Pundi X[old]',
-        shortName: 'NPXS',
-        pairID: '1075261',
+        name: 'Atom',
+        shortName: 'ATOM',
+        pairID: '1071461',
+        backPos: '-392px'
+    },
+    {
+        name: 'Shiba Inu',
+        shortName: 'SHIBA',
+        pairID: '1177506',
         backPos: '-392px'
     },
     {
