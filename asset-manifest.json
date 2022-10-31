@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/cryptosmart/static/css/main.c5329ecf.css",
-    "main.js": "/cryptosmart/static/js/main.2964423d.js",
+    "main.js": "/cryptosmart/static/js/main.02f5b0b5.js",
     "static/js/787.dc5621f8.chunk.js": "/cryptosmart/static/js/787.dc5621f8.chunk.js",
     "index.html": "/cryptosmart/index.html",
     "main.c5329ecf.css.map": "/cryptosmart/static/css/main.c5329ecf.css.map",
-    "main.2964423d.js.map": "/cryptosmart/static/js/main.2964423d.js.map",
+    "main.02f5b0b5.js.map": "/cryptosmart/static/js/main.02f5b0b5.js.map",
     "787.dc5621f8.chunk.js.map": "/cryptosmart/static/js/787.dc5621f8.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.c5329ecf.css",
-    "static/js/main.2964423d.js"
+    "static/js/main.02f5b0b5.js"
   ]
 }
