@@ -125,6 +125,12 @@ const cryptos = [
         pairID: '1061794',
         backPos: '-392px'
     },
+    {
+        name: 'Dogecoin',
+        shortName: 'DOGE',
+        pairID: '1061477',
+        backPos: '-392px'
+    }
 ];
 
 export default { cryptos }
