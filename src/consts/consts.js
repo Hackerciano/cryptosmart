@@ -2,7 +2,7 @@ const cryptos = [
     {
         name: 'bitcoin',
         shortName: 'BTC',
-        pairID: '945629',
+        pairID: '1057391',
         backPos: '-392px'
     },
     {
