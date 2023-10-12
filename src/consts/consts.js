@@ -130,6 +130,24 @@ const cryptos = [
         shortName: 'DOGE',
         pairID: '1061477',
         backPos: '-392px'
+    },
+    {
+        name: '1INCH',
+        shortName: '1INCH',
+        pairID: '1169571',
+        backPos: '-392px'
+    },
+    {
+        name: 'FET',
+        shortName: 'FET',
+        pairID: '1123942',
+        backPos: '-392px'
+    },
+    {
+        name: 'MBOX',
+        shortName: 'MBOX',
+        pairID: '1180892',
+        backPos: '-392px'
     }
 ];
 
