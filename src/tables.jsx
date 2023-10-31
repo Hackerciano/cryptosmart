@@ -84,11 +84,15 @@ export default function Tables() {
         let tempData = cryptos.cryptos;
         for (let i = 0; i < tempData.length; i++) {
             const crypto = tempData[i];
-            const cryptoData = await callInvesting(crypto.pairID, 'P1W', 'P1D', 120);
+            const cryptoData = await callInvesting(crypto.pairID, 'P1M', 'P1D', 120);
             let newValue = cryptoData.data.data;
-            // Format date
-            newValue.forEach(value => {
+            // Iterate between each value of date
+            newValue.forEach((value, i) => {
+                // Format date
                 value[0] = getDate(value[0]);
+                // Calculate suggestion
+                let suggestion = calculateSuggestion(newValue, i);
+                value[value.length] = suggestion;
             });
             tempData[i]['data'] = newValue;
         }
@@ -142,6 +146,46 @@ export default function Tables() {
         }, function (err) {
             console.error('Async: Could not copy text: ', err);
         });
+    }
+
+    const calculateSuggestion = (bulkData, index) => {
+        let tbd = bulkData;
+        let absolute = (Number(tbd[index][2]) - Number(tbd[index][3]));
+        tbd[index].push(absolute);
+
+        // IF INDEX GREATER OR EQUAL TO 8, THEN CALCULATE AVERAGE
+        if (index >= 8) {
+            let avg = 0;
+            let start = index - 8;
+            let finish = index;
+            for (let i = start; i <= finish; i++) {
+                avg = avg + tbd[i][7]; 
+            }
+            avg =  avg / 9;
+            tbd[index].push(avg);
+        }
+
+        // IF INDEX GREATER OR EQUAL TO 18, THEN CALCULATE SUGGESTION
+        if (index >= 18) {
+            let absAvg1 = (tbd[index][7] + tbd[index-1][7]+tbd[index-2][7]+tbd[index-3][7]+tbd[index-4][7]+tbd[index-5][7]+tbd[index-6][7]+tbd[index-7][7]+tbd[index-8][7])/9;
+            let absAvg2 = (tbd[index-1][7] + tbd[index-2][7]+tbd[index-3][7]+tbd[index-4][7]+tbd[index-5][7]+tbd[index-6][7]+tbd[index-7][7]+tbd[index-8][7]+tbd[index-9][7])/9;
+            let avgMax1 = Math.max(tbd[index-2][8], tbd[index-3][8], tbd[index-4][8], tbd[index-5][8], tbd[index-6][8], tbd[index-7][8], tbd[index-8][8]);
+            let avgMin1 = Math.min(tbd[index-2][8], tbd[index-3][8], tbd[index-4][8], tbd[index-5][8], tbd[index-6][8], tbd[index-7][8], tbd[index-8][8]);
+            let avgMax2 = Math.max(tbd[index-3][8], tbd[index-4][8], tbd[index-5][8], tbd[index-6][8], tbd[index-7][8], tbd[index-8][8], tbd[index-9][8]);
+            let avgMin2 = Math.min(tbd[index-3][8], tbd[index-4][8], tbd[index-5][8], tbd[index-6][8], tbd[index-7][8], tbd[index-8][8], tbd[index-9][8]);
+            let close = bulkData[index][4];
+            let highAvg = (bulkData[index][2] + bulkData[index - 1][2] + bulkData[index - 2][2]) / 3;
+
+            if ((avgMax1 < absAvg1 && avgMax2 >= absAvg2) && close > highAvg) {
+                return "COMPRA";
+            } else if ((avgMin1 > absAvg1 && avgMin2 <= absAvg2) && close < highAvg) {
+                return "VENTA";
+            } else {
+                return "";
+            }
+
+        }
+    
     }
 
 
@@ -206,6 +250,7 @@ export default function Tables() {
                                                 <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Low</TableCell>
                                                 <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Close</TableCell>
                                                 <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Volume</TableCell>
+                                                <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Sugerencia</TableCell>
                                                 <TableCell align="right" style={{color: 'blue',backgroundColor: '#e9ecef'}}>Acciones</TableCell>
                                             </TableRow>
                                         </TableHead>
@@ -213,7 +258,7 @@ export default function Tables() {
                                                 cryptosData.map((crypto) => (
                                                         <TableBody>
                                                             <TableRow style={{backgroundColor: '#BBE6E4'}}>
-                                                                <TableCell colSpan={7} align='center'>{crypto.name} - {crypto.shortName}</TableCell>
+                                                                <TableCell colSpan={8} align='center'>{crypto.name} - {crypto.shortName}</TableCell>
                                                             </TableRow>
                                                             <TableRow className='table-row'>
                                                                 <TableCell className='table-cell' align="right">{
@@ -233,6 +278,9 @@ export default function Tables() {
                                                                 }</TableCell>
                                                                 <TableCell className='table-cell' align="right">{
                                                                     (crypto.data[maxLength-3][5] < 1) ? crypto.data[maxLength-3][5] : crypto.data[maxLength-3][5].toLocaleString("en-US")
+                                                                }</TableCell>
+                                                                <TableCell className='table-cell' align="right">{
+                                                                    crypto.data[maxLength-3][9]
                                                                 }</TableCell>
                                                                     {(crypto.shortName == 'NPXS') ?
                                                                     <TableCell className='table-cell' align="right" rowSpan={2} style={{textAlign: 'center'}}>
@@ -265,7 +313,9 @@ export default function Tables() {
                                                                 <TableCell className='table-cell' align="right">{
                                                                     (crypto.data[maxLength-2][5] < 1) ? crypto.data[maxLength-2][5] : crypto.data[maxLength-2][5].toLocaleString("en-US")
                                                                 }</TableCell>
-                                                                
+                                                                <TableCell className='table-cell' align="right">{
+                                                                    crypto.data[maxLength-2][9]
+                                                                }</TableCell>
                                                             </TableRow>
                                                         </TableBody>
                                                 ))
@@ -294,6 +344,7 @@ export default function Tables() {
                                                         <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Low</TableCell>
                                                         <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Close</TableCell>
                                                         <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Volume</TableCell>
+                                                        <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Sugerencia</TableCell>
                                                     </TableRow>
                                                 </TableHead>
                                                 {(cryptosData.length != 0) ?
@@ -306,6 +357,7 @@ export default function Tables() {
                                                             <TableCell className='table-cell' align="right">{value[3]}</TableCell>
                                                             <TableCell className='table-cell' align="right">{value[4]}</TableCell>
                                                             <TableCell className='table-cell' align="right">{value[5]}</TableCell>
+                                                            <TableCell className='table-cell' align="right">{value[9]}</TableCell>
                                                         </TableRow>
                                                     ))}
                                                 </TableBody>
