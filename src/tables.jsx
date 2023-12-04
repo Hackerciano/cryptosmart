@@ -118,7 +118,7 @@ export default function Tables() {
         d.setUTCMilliseconds(unixEpoch);
         d = d.toISOString().split('T')[0];
         const [year, month, day] = d.split('-');
-        const result = [month, day, year].join('/');
+        const result = [day, month, year].join('-');
         return result;
     }
 
@@ -126,7 +126,7 @@ export default function Tables() {
         let copied = '<table><tr>';
         if (row1) {
             row1.forEach((item, i) => {
-                (item != 0) && (copied = copied + `<td>${item}</td>`);
+                (item != 0 && i <= 5) && (copied = copied + `<td>${item}</td>`);
             });
             copied = copied + '</tr>';
         }
@@ -134,10 +134,35 @@ export default function Tables() {
         if (row2) {
             copied = copied + '<tr>';
             row2.forEach((item, i) => {
-                (item != 0) && (copied = copied + `<td>${item}</td>`);
+                (item != 0 && i <= 5) && (copied = copied + `<td>${item}</td>`);
             });
             copied = copied + '</tr>';
         }
+        copied = copied + '</table>';
+        const blob = new Blob([copied], { type: "text/plain" });
+        const tableHtml = new window.ClipboardItem({ "text/plain": blob });
+
+        navigator.clipboard.write([tableHtml]).then(function () {
+        }, function (err) {
+            console.error('Async: Could not copy text: ', err);
+        });
+    }
+
+    const copyAll = (day) => {
+        let pivot = (day == 1) ? 3 : (day == 2) ? 2 : 0;
+
+        let copied = '<table><tr>';
+        cryptosData.forEach(crypto => {
+            copied = copied + `<td>${crypto.name} - ${crypto.shortName}</td>`;
+            copied = copied + `<td>${crypto.data[crypto.data.length - pivot][0]}</td>`; // Date
+            copied = copied + `<td>${crypto.data[crypto.data.length - pivot][1]}</td>`; // Open
+            copied = copied + `<td>${crypto.data[crypto.data.length - pivot][2]}</td>`; // High
+            copied = copied + `<td>${crypto.data[crypto.data.length - pivot][3]}</td>`; // Low
+            copied = copied + `<td>${crypto.data[crypto.data.length - pivot][4]}</td>`; // Close
+            copied = copied + `<td>${crypto.data[crypto.data.length - pivot][5]}</td>`; // Vol
+
+            copied = copied + '</tr>';
+        });
         copied = copied + '</table>';
         const blob = new Blob([copied], { type: "text/plain" });
         const tableHtml = new window.ClipboardItem({ "text/plain": blob });
@@ -200,12 +225,18 @@ export default function Tables() {
                             <CircularProgress />
                         </Grid>
                     </Dialog>
-                    <Grid item textAlign={'left'} xs={6}>
+                    <Grid item textAlign={'left'} xs={3}>
                         <h1>Hola Juan Carlos 👋🏻</h1>
-                        <h3>Cryptosmart Web v1.0.1</h3>
+                        <h3>Cryptosmart Web v1.2.1</h3>
                     </Grid>
-                    <Grid item xs={6}>
+                    <Grid item xs={3}>
                         <Button variant="outlined" style={{ marginTop: '50px' }} onClick={() => updateCryptos()}>Actualizar datos</Button>
+                    </Grid>
+                    <Grid item xs={3}>
+                        <Button disabled={cryptosData.length == 0} variant="outlined" style={{ marginTop: '50px' }} onClick={() => copyAll(1)}>Copiar todo dia 1</Button>
+                    </Grid>
+                    <Grid item xs={3}>
+                        <Button disabled={cryptosData.length == 0} variant="outlined" style={{ marginTop: '50px' }} onClick={() => copyAll(2)}>Copiar todo dia 2</Button>
                     </Grid>
                 </Grid>
                 <Grid>
