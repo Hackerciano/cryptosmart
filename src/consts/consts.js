@@ -138,9 +138,9 @@ const cryptos = [
         backPos: '-392px'
     },
     {
-        name: 'FET',
-        shortName: 'FET',
-        pairID: '1123942',
+        name: 'Solana',
+        shortName: 'SOL',
+        pairID: '1177183',
         backPos: '-392px'
     },
     {
