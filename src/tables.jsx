@@ -78,6 +78,7 @@ export default function Tables() {
         setValue(index);
     };
 
+    
     const updateCryptos = async () => {
         // Update crypto currencies
         setOpen(true);
