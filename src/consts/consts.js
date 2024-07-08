@@ -30,12 +30,6 @@ const cryptos = [
         backPos: '-322px'
     },
     {
-        name: 'EOS',
-        shortName: 'EOS',
-        pairID: '1061444',
-        backPos: '-224px'
-    },
-    {
         name: '0x',
         shortName: 'ZRX',
         pairID: '1061803',
@@ -148,7 +142,13 @@ const cryptos = [
         shortName: 'MBOX',
         pairID: '1180892',
         backPos: '-392px'
-    }
+    },
+    {
+        name: 'FET',
+        shortName: 'FET',
+        pairID: '1123942',
+        backPos: '-392px'
+    },
 ];
 
 export default { cryptos }
