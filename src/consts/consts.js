@@ -146,7 +146,7 @@ const cryptos = [
     {
         name: 'FET',
         shortName: 'FET',
-        pairID: '1123942',
+        pairID: '1142591',
         backPos: '-392px'
     },
 ];
