@@ -1,5 +1,6 @@
 import React from "react";
 import cryptos from './consts/consts';
+import stocks from './consts/consts';
 import PropTypes from 'prop-types';
 import { useTheme } from '@mui/material/styles';
 import SwipeableViews from 'react-swipeable-views';
@@ -11,8 +12,6 @@ import {
     Box,
     Button,
     Dialog,
-    Select,
-    MenuItem
 } from '@mui/material';
 import { useEffect } from "react";
 import axios from 'axios';
@@ -64,7 +63,10 @@ export default function Tables() {
     const [value, setValue] = React.useState(0);
     const [open, setOpen] = React.useState(false);
     const [cryptosData, setCryptosData] = React.useState([]);
-    const [maxLength, setMaxLength] = React.useState(0);
+    const [stocksData, setStocksData] = React.useState([]);
+    const [maxLengthCrypto, setMaxLengthCrypto] = React.useState(0);
+    const [maxLengthStocks, setmaxLengthStocks] = React.useState(0);
+    const [mode, setMode] = React.useState(0);
 
     useEffect(() => {
         //updateCryptos();
@@ -74,19 +76,28 @@ export default function Tables() {
         setValue(newValue);
     };
 
+    const handleChangeMode = (event, newValue) => {
+        setMode((mode === 0) ? 1 : 0);
+    }
+
     const handleChangeIndex = (index) => {
         setValue(index);
+    };
+
+    const handleChangeIndexMode = (index) => {
+        setMode(index);
     };
 
     
     const updateCryptos = async () => {
         // Update crypto currencies
         setOpen(true);
-        let tempData = cryptos.cryptos;
+        // Check for mode
+        let tempData = (mode === 0) ? cryptos.cryptos : stocks.stocks;
         for (let i = 0; i < tempData.length; i++) {
-            const crypto = tempData[i];
-            const cryptoData = await callInvesting(crypto.pairID, 'P1M', 'P1D', 120);
-            let newValue = cryptoData.data.data;
+            const pid = tempData[i];
+            const pidData = await callInvesting(pid.pairID, 'P1M', 'P1D', 120);
+            let newValue = pidData.data.data;
             // Iterate between each value of date
             newValue.forEach((value, i) => {
                 // Format date
@@ -97,8 +108,13 @@ export default function Tables() {
             });
             tempData[i]['data'] = newValue;
         }
-        setCryptosData(tempData);
-        setMaxLength(tempData[0].data.length);
+        console.log(tempData);
+
+        (mode === 0) ? setCryptosData(tempData) : setStocksData(tempData);
+        (mode === 0) ? setMaxLengthCrypto(tempData[0].data.length) : setmaxLengthStocks(tempData[0].data.length);
+
+        console.log(tempData[0].data.length);
+
         setOpen(false);
     }
 
@@ -228,7 +244,7 @@ export default function Tables() {
                     </Dialog>
                     <Grid item textAlign={'left'} xs={3}>
                         <h1>Hola Juan Carlos 👋🏻</h1>
-                        <h3>Cryptosmart Web v1.2.1</h3>
+                        <h3>Cryptosmart Web v1.3.0</h3>
                     </Grid>
                     <Grid item xs={3}>
                         <Button variant="outlined" style={{ marginTop: '50px' }} onClick={() => updateCryptos()}>Actualizar datos</Button>
@@ -241,168 +257,384 @@ export default function Tables() {
                     </Grid>
                 </Grid>
                 <Grid>
-                    <Box sx={{ maxWidth: { xs: '100%', sm: '100%' }, bgcolor: 'background.paper' }}>
+                    <Box sx={{ width: '100%', bgcolor: 'background.paper' }}>
                         <Tabs
-                            value={value}
-                            onChange={handleChange}
-                            variant="scrollable"
+                            value={mode}
+                            onChange={handleChangeMode}
+                            variant="fullWidth"
+                            fullWidth
                             scrollButtons="auto"
                             allowScrollButtonsMobile
                             aria-label="scrollable auto tabs example"
                         >
-                            <Tab label='Resumen' icon={'📊 '}></Tab>
-                            {cryptos.cryptos.map((crypto, i) =>
-                                <Tab label={crypto.shortName} icon={
-                                    <div style={{
-                                        width: '14px',
-                                        height: '11px',
-                                        overflow: 'hidden',
-                                        backgroundImage: "url('https://i-invdn-com.investing.com/next_/images/components/flags/currency-v3.svg')",
-                                        backgroundPositionX: crypto.backPos
-                                    }} />
-                                }></Tab>
-                            )}
+                            <Tab label='Cryptos' icon={'₿ '}></Tab>
+                            <Tab label='Stocks' icon={'📈 '}></Tab>
                         </Tabs>
                         <SwipeableViews
                             axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-                            index={value}
+                            index={mode}
                             onChangeIndex={handleChangeIndex}
                         >
+
+                            {/* ************************************************************ */}
+                            {/* Cryptos */}
+                            {/* ************************************************************ */}
+
+
                             <TabPanel>
-                                <Grid textAlign={'left'}>
-                                    <h3>Resumen</h3>
-                                </Grid>
-                                <TableContainer component={Paper} style={{maxHeight: '60vh', height: '60vh'}}>
-                                    <Table sx={{ minWidth: 650 }} aria-label="simple table" stickyHeader>
-                                        <TableHead>
-                                            <TableRow>
-                                                <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Date</TableCell>
-                                                <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Open</TableCell>
-                                                <TableCell style={{backgroundColor: '#e9ecef'}} align="right">High</TableCell>
-                                                <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Low</TableCell>
-                                                <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Close</TableCell>
-                                                <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Volume</TableCell>
-                                                <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Sugerencia</TableCell>
-                                                <TableCell align="right" style={{color: 'blue',backgroundColor: '#e9ecef'}}>Acciones</TableCell>
-                                            </TableRow>
-                                        </TableHead>
-                                        {(cryptosData.length != 0) ?
-                                                cryptosData.map((crypto) => (
-                                                        <TableBody>
-                                                            <TableRow style={{backgroundColor: '#BBE6E4'}}>
-                                                                <TableCell colSpan={8} align='center'>{crypto.name} - {crypto.shortName}</TableCell>
+                                <Paper elevation={6}>
+                                    <Box sx={{ width: '100%', bgcolor: 'background.paper' }}>
+                                        <Tabs
+                                            value={value}
+                                            onChange={handleChange}
+                                            variant="scrollable"
+                                            scrollButtons="auto"
+                                            allowScrollButtonsMobile
+                                            aria-label="scrollable auto tabs example"
+                                        >
+                                            <Tab label='Resumen' icon={'📊 '}></Tab>
+                                            {cryptos.cryptos.map((crypto, i) =>
+                                                <Tab label={crypto.shortName} icon={
+                                                    <div style={{
+                                                        width: '14px',
+                                                        height: '11px',
+                                                        overflow: 'hidden',
+                                                        backgroundImage: "url('https://i-invdn-com.investing.com/next_/images/components/flags/currency-v3.svg')",
+                                                        backgroundPositionX: crypto.backPos
+                                                    }} />
+                                                }></Tab>
+                                            )}
+                                        </Tabs>
+                                        <SwipeableViews
+                                            axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+                                            index={value}
+                                            onChangeIndex={handleChangeIndex}
+                                        >
+                                            <TabPanel>
+                                                <Grid textAlign={'left'}>
+                                                    <h3>Resumen</h3>
+                                                </Grid>
+                                                <TableContainer component={Paper} style={{maxHeight: '60vh', height: '60vh'}}>
+                                                    <Table sx={{ minWidth: 650 }} aria-label="simple table" stickyHeader>
+                                                        <TableHead>
+                                                            <TableRow>
+                                                                <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Date</TableCell>
+                                                                <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Open</TableCell>
+                                                                <TableCell style={{backgroundColor: '#e9ecef'}} align="right">High</TableCell>
+                                                                <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Low</TableCell>
+                                                                <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Close</TableCell>
+                                                                <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Volume</TableCell>
+                                                                <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Sugerencia</TableCell>
+                                                                <TableCell align="right" style={{color: 'blue',backgroundColor: '#e9ecef'}}>Acciones</TableCell>
                                                             </TableRow>
-                                                            <TableRow className='table-row'>
-                                                                <TableCell className='table-cell' align="right">{
-                                                                (crypto.shortName == 'NPXS') ? crypto.data[maxLength-2][0] : crypto.data[maxLength-3][0]
-                                                                }</TableCell>
-                                                                <TableCell className='table-cell' align="right">{
-                                                                    (crypto.data[maxLength-3][1] < 1) ? crypto.data[maxLength-3][1] : crypto.data[maxLength-3][1].toLocaleString("en-US")
-                                                                }</TableCell>
-                                                                <TableCell className='table-cell' align="right">{
-                                                                    (crypto.data[maxLength-3][2] < 1) ? crypto.data[maxLength-3][2] : crypto.data[maxLength-3][2].toLocaleString("en-US")
-                                                                }</TableCell>
-                                                                <TableCell className='table-cell' align="right">{
-                                                                    (crypto.data[maxLength-3][3] < 1) ? crypto.data[maxLength-3][3] : crypto.data[maxLength-3][3].toLocaleString("en-US")
-                                                                }</TableCell>
-                                                                <TableCell className='table-cell' align="right">{
-                                                                    (crypto.data[maxLength-3][4] < 1) ? crypto.data[maxLength-3][4] : crypto.data[maxLength-3][4].toLocaleString("en-US")
-                                                                }</TableCell>
-                                                                <TableCell className='table-cell' align="right">{
-                                                                    (crypto.data[maxLength-3][5] < 1) ? crypto.data[maxLength-3][5] : crypto.data[maxLength-3][5].toLocaleString("en-US")
-                                                                }</TableCell>
-                                                                <TableCell className='table-cell' align="right">{
-                                                                    crypto.data[maxLength-3][9]
-                                                                }</TableCell>
-                                                                    {(crypto.shortName == 'NPXS') ?
-                                                                    <TableCell className='table-cell' align="right" rowSpan={2} style={{textAlign: 'center'}}>
-                                                                        <Button style={{display: 'block', width: '200px'}} variant='outlined' onClick={() => copyRows(crypto.data[maxLength-2])}>Copiar 1 dia</Button>
-                                                                        <Button style={{display: 'block', width: '200px'}} variant='outlined' onClick={() => copyRows(crypto.data[maxLength-2], crypto.data[maxLength-1])}>Copiar 2 dias</Button>
-                                                                    </TableCell>
-                                                                    :
-                                                                    <TableCell className='table-cell' align="right" rowSpan={2} style={{textAlign: 'center'}}>
-                                                                        <Button style={{display: 'block', width: '200px'}} variant='outlined' onClick={() => copyRows(crypto.data[maxLength-3])}>Copiar 1 dia</Button>
-                                                                        <Button style={{display: 'block', width: '200px'}} variant='outlined' onClick={() => copyRows(crypto.data[maxLength-3], crypto.data[maxLength-2])}>Copiar 2 dias</Button>
-                                                                    </TableCell>
-                                                                    }
-                                                            </TableRow>
-                                                            <TableRow className='table-row'>
-                                                                <TableCell className='table-cell' align="right">{
-                                                                    crypto.data[maxLength-2][0]
-                                                                }</TableCell>
-                                                                <TableCell className='table-cell' align="right">{
-                                                                    (crypto.data[maxLength-2][1] < 1) ? crypto.data[maxLength-2][1] : crypto.data[maxLength-2][1].toLocaleString("en-US")
-                                                                }</TableCell>
-                                                                <TableCell className='table-cell' align="right">{
-                                                                    (crypto.data[maxLength-2][2] < 1) ? crypto.data[maxLength-2][2] : crypto.data[maxLength-2][2].toLocaleString("en-US")
-                                                                }</TableCell>
-                                                                <TableCell className='table-cell' align="right">{
-                                                                    (crypto.data[maxLength-2][3] < 1) ? crypto.data[maxLength-2][3] : crypto.data[maxLength-2][3].toLocaleString("en-US")
-                                                                }</TableCell>
-                                                                <TableCell className='table-cell' align="right">{
-                                                                    (crypto.data[maxLength-2][4] < 1) ? crypto.data[maxLength-2][4] : crypto.data[maxLength-2][4].toLocaleString("en-US")
-                                                                }</TableCell>
-                                                                <TableCell className='table-cell' align="right">{
-                                                                    (crypto.data[maxLength-2][5] < 1) ? crypto.data[maxLength-2][5] : crypto.data[maxLength-2][5].toLocaleString("en-US")
-                                                                }</TableCell>
-                                                                <TableCell className='table-cell' align="right">{
-                                                                    crypto.data[maxLength-2][9]
-                                                                }</TableCell>
-                                                            </TableRow>
-                                                        </TableBody>
-                                                ))
-                                        :
-                                        ''
-                                        }
-                                    </Table>
-                                </TableContainer>
+                                                        </TableHead>
+                                                        {(cryptosData.length != 0) ?
+                                                                cryptosData.map((crypto) => (
+                                                                        <TableBody>
+                                                                            <TableRow style={{backgroundColor: '#BBE6E4'}}>
+                                                                                <TableCell colSpan={8} align='center'>{crypto.name} - {crypto.shortName}</TableCell>
+                                                                            </TableRow>
+                                                                            <TableRow className='table-row'>
+                                                                                <TableCell className='table-cell' align="right">{
+                                                                                    crypto.data[maxLengthCrypto-3][0]
+                                                                                }</TableCell>
+                                                                                <TableCell className='table-cell' align="right">{
+                                                                                    (crypto.data[maxLengthCrypto-3][1] < 1) ? crypto.data[maxLengthCrypto-3][1] : crypto.data[maxLengthCrypto-3][1].toLocaleString("en-US")
+                                                                                }</TableCell>
+                                                                                <TableCell className='table-cell' align="right">{
+                                                                                    (crypto.data[maxLengthCrypto-3][2] < 1) ? crypto.data[maxLengthCrypto-3][2] : crypto.data[maxLengthCrypto-3][2].toLocaleString("en-US")
+                                                                                }</TableCell>
+                                                                                <TableCell className='table-cell' align="right">{
+                                                                                    (crypto.data[maxLengthCrypto-3][3] < 1) ? crypto.data[maxLengthCrypto-3][3] : crypto.data[maxLengthCrypto-3][3].toLocaleString("en-US")
+                                                                                }</TableCell>
+                                                                                <TableCell className='table-cell' align="right">{
+                                                                                    (crypto.data[maxLengthCrypto-3][4] < 1) ? crypto.data[maxLengthCrypto-3][4] : crypto.data[maxLengthCrypto-3][4].toLocaleString("en-US")
+                                                                                }</TableCell>
+                                                                                <TableCell className='table-cell' align="right">{
+                                                                                    (crypto.data[maxLengthCrypto-3][5] < 1) ? crypto.data[maxLengthCrypto-3][5] : crypto.data[maxLengthCrypto-3][5].toLocaleString("en-US")
+                                                                                }</TableCell>
+                                                                                <TableCell className='table-cell' align="right">{
+                                                                                    crypto.data[maxLengthCrypto-3][9]
+                                                                                }</TableCell>
+                                                                                    {(crypto.shortName == 'NPXS') ?
+                                                                                    <TableCell className='table-cell' align="right" rowSpan={2} style={{textAlign: 'center'}}>
+                                                                                        <Button style={{display: 'block', width: '200px'}} variant='outlined' onClick={() => copyRows(crypto.data[maxLengthCrypto-2])}>Copiar 1 dia</Button>
+                                                                                        <Button style={{display: 'block', width: '200px'}} variant='outlined' onClick={() => copyRows(crypto.data[maxLengthCrypto-2], crypto.data[maxLengthCrypto-1])}>Copiar 2 dias</Button>
+                                                                                    </TableCell>
+                                                                                    :
+                                                                                    <TableCell className='table-cell' align="right" rowSpan={2} style={{textAlign: 'center'}}>
+                                                                                        <Button style={{display: 'block', width: '200px'}} variant='outlined' onClick={() => copyRows(crypto.data[maxLengthCrypto-3])}>Copiar 1 dia</Button>
+                                                                                        <Button style={{display: 'block', width: '200px'}} variant='outlined' onClick={() => copyRows(crypto.data[maxLengthCrypto-3], crypto.data[maxLengthCrypto-2])}>Copiar 2 dias</Button>
+                                                                                    </TableCell>
+                                                                                    }
+                                                                            </TableRow>
+                                                                            <TableRow className='table-row'>
+                                                                                <TableCell className='table-cell' align="right">{
+                                                                                    crypto.data[maxLengthCrypto-2][0]
+                                                                                }</TableCell>
+                                                                                <TableCell className='table-cell' align="right">{
+                                                                                    (crypto.data[maxLengthCrypto-2][1] < 1) ? crypto.data[maxLengthCrypto-2][1] : crypto.data[maxLengthCrypto-2][1].toLocaleString("en-US")
+                                                                                }</TableCell>
+                                                                                <TableCell className='table-cell' align="right">{
+                                                                                    (crypto.data[maxLengthCrypto-2][2] < 1) ? crypto.data[maxLengthCrypto-2][2] : crypto.data[maxLengthCrypto-2][1].toLocaleString("en-US")
+                                                                                }</TableCell>
+                                                                                <TableCell className='table-cell' align="right">{
+                                                                                    (crypto.data[maxLengthCrypto-2][3] < 1) ? crypto.data[maxLengthCrypto-2][3] : crypto.data[maxLengthCrypto-2][1].toLocaleString("en-US")
+                                                                                }</TableCell>
+                                                                                <TableCell className='table-cell' align="right">{
+                                                                                    (crypto.data[maxLengthCrypto-2][4] < 1) ? crypto.data[maxLengthCrypto-2][4] : crypto.data[maxLengthCrypto-2][1].toLocaleString("en-US")
+                                                                                }</TableCell>
+                                                                                <TableCell className='table-cell' align="right">{
+                                                                                    (crypto.data[maxLengthCrypto-2][5] < 1) ? crypto.data[maxLengthCrypto-2][5] : crypto.data[maxLengthCrypto-2][1].toLocaleString("en-US")
+                                                                                }</TableCell>
+                                                                                <TableCell className='table-cell' align="right">{
+                                                                                    crypto.data[maxLengthCrypto-2][9]
+                                                                                }</TableCell>
+                                                                            </TableRow>
+                                                                        </TableBody>
+                                                                ))
+                                                        :
+                                                        ''
+                                                        }
+                                                    </Table>
+                                                </TableContainer>
 
 
 
 
-                            {/* Tab panel for each crypto currency and its table     */}
+                                            {/* Tab panel for each crypto currency and its table     */}
+                                            </TabPanel>
+                                            {cryptos.cryptos.map((crypto, i) =>
+                                                <TabPanel>
+                                                    <Grid textAlign={'left'}>
+                                                        <h3>{crypto.name}</h3>
+                                                        <TableContainer component={Paper}>
+                                                            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                                                                <TableHead>
+                                                                    <TableRow>
+                                                                        <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Date</TableCell>
+                                                                        <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Open</TableCell>
+                                                                        <TableCell style={{backgroundColor: '#e9ecef'}} align="right">High</TableCell>
+                                                                        <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Low</TableCell>
+                                                                        <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Close</TableCell>
+                                                                        <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Volume</TableCell>
+                                                                        <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Sugerencia</TableCell>
+                                                                    </TableRow>
+                                                                </TableHead>
+                                                                {(cryptosData.length != 0) ?
+                                                                    <TableBody>
+                                                                    {cryptosData[i].data.map((value) => (
+                                                                        <TableRow className='table-row'>
+                                                                            <TableCell className='table-cell' align="right">{value[0]}</TableCell>
+                                                                            <TableCell className='table-cell' align="right">{value[1]}</TableCell>
+                                                                            <TableCell className='table-cell' align="right">{value[2]}</TableCell>
+                                                                            <TableCell className='table-cell' align="right">{value[3]}</TableCell>
+                                                                            <TableCell className='table-cell' align="right">{value[4]}</TableCell>
+                                                                            <TableCell className='table-cell' align="right">{value[5]}</TableCell>
+                                                                            <TableCell className='table-cell' align="right">{value[9]}</TableCell>
+                                                                        </TableRow>
+                                                                    ))}
+                                                                </TableBody>
+                                                                :
+                                                                ''
+                                                                }
+                                                            </Table>
+                                                        </TableContainer>
+                                                    </Grid>
+                                                </TabPanel>
+                                            )}
+                                        </SwipeableViews>
+                                    </Box>
+                                </Paper>
                             </TabPanel>
-                            {cryptos.cryptos.map((crypto, i) =>
-                                <TabPanel>
-                                    <Grid textAlign={'left'}>
-                                        <h3>{crypto.name}</h3>
-                                        <TableContainer component={Paper}>
-                                            <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                                                <TableHead>
-                                                    <TableRow>
-                                                        <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Date</TableCell>
-                                                        <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Open</TableCell>
-                                                        <TableCell style={{backgroundColor: '#e9ecef'}} align="right">High</TableCell>
-                                                        <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Low</TableCell>
-                                                        <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Close</TableCell>
-                                                        <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Volume</TableCell>
-                                                        <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Sugerencia</TableCell>
-                                                    </TableRow>
-                                                </TableHead>
-                                                {(cryptosData.length != 0) ?
-                                                    <TableBody>
-                                                    {cryptosData[i].data.map((value) => (
-                                                        <TableRow className='table-row'>
-                                                            <TableCell className='table-cell' align="right">{value[0]}</TableCell>
-                                                            <TableCell className='table-cell' align="right">{value[1]}</TableCell>
-                                                            <TableCell className='table-cell' align="right">{value[2]}</TableCell>
-                                                            <TableCell className='table-cell' align="right">{value[3]}</TableCell>
-                                                            <TableCell className='table-cell' align="right">{value[4]}</TableCell>
-                                                            <TableCell className='table-cell' align="right">{value[5]}</TableCell>
-                                                            <TableCell className='table-cell' align="right">{value[9]}</TableCell>
-                                                        </TableRow>
-                                                    ))}
-                                                </TableBody>
-                                                :
-                                                ''
-                                                }
-                                            </Table>
-                                        </TableContainer>
-                                    </Grid>
-                                </TabPanel>
-                            )}
+
+                            {/* ************************************************************ */}
+                            {/* Stocks */}
+                            {/* ************************************************************ */}
+
+                            <TabPanel>
+                                <Paper elevation={6}>
+                                <Box sx={{ width: '100%', bgcolor: 'background.paper' }}>
+                                        <Tabs
+                                            value={value}
+                                            onChange={handleChange}
+                                            variant="scrollable"
+                                            scrollButtons="auto"
+                                            allowScrollButtonsMobile
+                                            aria-label="scrollable auto tabs example"
+                                        >
+                                            <Tab label='Resumen' icon={'📊 '}></Tab>
+                                            {stocks.stocks.map((crypto, i) =>
+                                                <Tab label={crypto.shortName} icon={
+                                                    <div style={{
+                                                        width: '14px',
+                                                        height: '11px',
+                                                        overflow: 'hidden',
+                                                        backgroundImage: "url('https://i-invdn-com.investing.com/next_/images/components/flags/currency-v3.svg')",
+                                                        backgroundPositionX: crypto.backPos
+                                                    }} />
+                                                }></Tab>
+                                            )}
+                                        </Tabs>
+                                        <SwipeableViews
+                                            axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+                                            index={value}
+                                            onChangeIndex={handleChangeIndex}
+                                        >
+                                            <TabPanel>
+                                                <Grid textAlign={'left'}>
+                                                    <h3>Resumen</h3>
+                                                </Grid>
+                                                <TableContainer component={Paper} style={{maxHeight: '60vh', height: '60vh'}}>
+                                                    <Table sx={{ minWidth: 650 }} aria-label="simple table" stickyHeader>
+                                                        <TableHead>
+                                                            <TableRow>
+                                                                <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Date</TableCell>
+                                                                <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Open</TableCell>
+                                                                <TableCell style={{backgroundColor: '#e9ecef'}} align="right">High</TableCell>
+                                                                <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Low</TableCell>
+                                                                <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Close</TableCell>
+                                                                <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Volume</TableCell>
+                                                                <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Sugerencia</TableCell>
+                                                                <TableCell align="right" style={{color: 'blue',backgroundColor: '#e9ecef'}}>Acciones</TableCell>
+                                                            </TableRow>
+                                                        </TableHead>
+                                                        {(stocksData.length != 0) ?
+                                                                stocksData.map((stock) => (
+                                                                        <TableBody>
+                                                                            <TableRow style={{backgroundColor: '#BBE6E4'}}>
+                                                                                <TableCell colSpan={8} align='center'>{stock.name} - {stock.shortName}</TableCell>
+                                                                            </TableRow>
+                                                                            <TableRow className='table-row'>
+                                                                                <TableCell className='table-cell' align="right">{
+                                                                                    stock.data[maxLengthStocks-3][0]
+                                                                                }</TableCell>
+                                                                                <TableCell className='table-cell' align="right">{
+                                                                                    (stock.data[maxLengthStocks-3][1] < 1) ? stock.data[maxLengthStocks-3][1] : stock.data[maxLengthStocks-3][1].toLocaleString("en-US")
+                                                                                }</TableCell>
+                                                                                <TableCell className='table-cell' align="right">{
+                                                                                    (stock.data[maxLengthStocks-3][2] < 1) ? stock.data[maxLengthStocks-3][2] : stock.data[maxLengthStocks-3][2].toLocaleString("en-US")
+                                                                                }</TableCell>
+                                                                                <TableCell className='table-cell' align="right">{
+                                                                                    (stock.data[maxLengthStocks-3][3] < 1) ? stock.data[maxLengthStocks-3][3] : stock.data[maxLengthStocks-3][3].toLocaleString("en-US")
+                                                                                }</TableCell>
+                                                                                <TableCell className='table-cell' align="right">{
+                                                                                    (stock.data[maxLengthStocks-3][4] < 1) ? stock.data[maxLengthStocks-3][4] : stock.data[maxLengthStocks-3][4].toLocaleString("en-US")
+                                                                                }</TableCell>
+                                                                                <TableCell className='table-cell' align="right">{
+                                                                                    (stock.data[maxLengthStocks-3][5] < 1) ? stock.data[maxLengthStocks-3][5] : stock.data[maxLengthStocks-3][5].toLocaleString("en-US")
+                                                                                }</TableCell>
+                                                                                <TableCell className='table-cell' align="right">{
+                                                                                    stock.data[maxLengthStocks-3][9]
+                                                                                }</TableCell>
+                                                                                    {(stock.shortName == 'NPXS') ?
+                                                                                    <TableCell className='table-cell' align="right" rowSpan={2} style={{textAlign: 'center'}}>
+                                                                                        <Button style={{display: 'block', width: '200px'}} variant='outlined' onClick={() => copyRows(stock.data[maxLengthStocks-2])}>Copiar 1 dia</Button>
+                                                                                        <Button style={{display: 'block', width: '200px'}} variant='outlined' onClick={() => copyRows(stock.data[maxLengthStocks-2], stock.data[maxLengthStocks-1])}>Copiar 2 dias</Button>
+                                                                                    </TableCell>
+                                                                                    :
+                                                                                    <TableCell className='table-cell' align="right" rowSpan={2} style={{textAlign: 'center'}}>
+                                                                                        <Button style={{display: 'block', width: '200px'}} variant='outlined' onClick={() => copyRows(stock.data[maxLengthStocks-3])}>Copiar 1 dia</Button>
+                                                                                        <Button style={{display: 'block', width: '200px'}} variant='outlined' onClick={() => copyRows(stock.data[maxLengthStocks-3], stock.data[maxLengthStocks-2])}>Copiar 2 dias</Button>
+                                                                                    </TableCell>
+                                                                                    }
+                                                                            </TableRow>
+                                                                            <TableRow className='table-row'>
+                                                                                <TableCell className='table-cell' align="right">{
+                                                                                    (stock.data[maxLengthStocks-2] !== undefined) ? stock.data[maxLengthStocks-2][0] : stock.data[maxLengthStocks-4][0]
+                                                                                }</TableCell>
+                                                                                <TableCell className='table-cell' align="right">{
+                                                                                    (stock.data[maxLengthStocks-2] !== undefined) ?
+                                                                                    (stock.data[maxLengthStocks-2][1] < 1) ? stock.data[maxLengthStocks-2][1] : stock.data[maxLengthStocks-2][1].toLocaleString("en-US")
+                                                                                    : (stock.data[maxLengthStocks-4][1] < 1) ? stock.data[maxLengthStocks-4][1] : stock.data[maxLengthStocks-4][1].toLocaleString("en-US")
+                                                                                }</TableCell>
+                                                                                <TableCell className='table-cell' align="right">{
+                                                                                    (stock.data[maxLengthStocks-2] !== undefined) ?
+                                                                                    (stock.data[maxLengthStocks-2][2] < 1) ? stock.data[maxLengthStocks-2][2] : stock.data[maxLengthStocks-2][1].toLocaleString("en-US")
+                                                                                    : (stock.data[maxLengthStocks-4][2] < 1) ? stock.data[maxLengthStocks-4][2] : stock.data[maxLengthStocks-4][1].toLocaleString("en-US")
+                                                                                }</TableCell>
+                                                                                <TableCell className='table-cell' align="right">{
+                                                                                    (stock.data[maxLengthStocks-2] !== undefined) ?
+                                                                                    (stock.data[maxLengthStocks-2][3] < 1) ? stock.data[maxLengthStocks-2][3] : stock.data[maxLengthStocks-2][1].toLocaleString("en-US")
+                                                                                    : (stock.data[maxLengthStocks-4][3] < 1) ? stock.data[maxLengthStocks-4][3] : stock.data[maxLengthStocks-4][1].toLocaleString("en-US")
+                                                                                }</TableCell>
+                                                                                <TableCell className='table-cell' align="right">{
+                                                                                    (stock.data[maxLengthStocks-2] !== undefined) ?
+                                                                                    (stock.data[maxLengthStocks-2][4] < 1) ? stock.data[maxLengthStocks-2][4] : stock.data[maxLengthStocks-2][1].toLocaleString("en-US")
+                                                                                    : (stock.data[maxLengthStocks-4][4] < 1) ? stock.data[maxLengthStocks-4][4] : stock.data[maxLengthStocks-4][1].toLocaleString("en-US")
+                                                                                }</TableCell>
+                                                                                <TableCell className='table-cell' align="right">{
+                                                                                    (stock.data[maxLengthStocks-2] !== undefined) ?
+                                                                                    (stock.data[maxLengthStocks-2][5] < 1) ? stock.data[maxLengthStocks-2][5] : stock.data[maxLengthStocks-2][1].toLocaleString("en-US")
+                                                                                    : (stock.data[maxLengthStocks-4][5] < 1) ? stock.data[maxLengthStocks-4][5] : stock.data[maxLengthStocks-4][1].toLocaleString("en-US")
+                                                                                }</TableCell>
+                                                                                <TableCell className='table-cell' align="right">{
+                                                                                    (stock.data[maxLengthStocks-2] !== undefined) ?
+                                                                                    stock.data[maxLengthStocks-2][9]
+                                                                                    : stock.data[maxLengthStocks-4][9]
+                                                                                }</TableCell>
+                                                                            </TableRow>
+                                                                        </TableBody>
+                                                                ))
+                                                        :
+                                                        ''
+                                                        }
+                                                    </Table>
+                                                </TableContainer>
+
+
+
+
+                                            {/* Tab panel for each stock currency and its table     */}
+                                            </TabPanel>
+                                            {stocks.stocks.map((stock, i) =>
+                                                <TabPanel>
+                                                    <Grid textAlign={'left'}>
+                                                        <h3>{stock.name}</h3>
+                                                        <TableContainer component={Paper}>
+                                                            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                                                                <TableHead>
+                                                                    <TableRow>
+                                                                        <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Date</TableCell>
+                                                                        <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Open</TableCell>
+                                                                        <TableCell style={{backgroundColor: '#e9ecef'}} align="right">High</TableCell>
+                                                                        <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Low</TableCell>
+                                                                        <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Close</TableCell>
+                                                                        <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Volume</TableCell>
+                                                                        <TableCell style={{backgroundColor: '#e9ecef'}} align="right">Sugerencia</TableCell>
+                                                                    </TableRow>
+                                                                </TableHead>
+                                                                {(stocksData.length != 0) ?
+                                                                    <TableBody>
+                                                                    {stocksData[i].data.map((value) => (
+                                                                        <TableRow className='table-row'>
+                                                                            <TableCell className='table-cell' align="right">{value[0]}</TableCell>
+                                                                            <TableCell className='table-cell' align="right">{value[1]}</TableCell>
+                                                                            <TableCell className='table-cell' align="right">{value[2]}</TableCell>
+                                                                            <TableCell className='table-cell' align="right">{value[3]}</TableCell>
+                                                                            <TableCell className='table-cell' align="right">{value[4]}</TableCell>
+                                                                            <TableCell className='table-cell' align="right">{value[5]}</TableCell>
+                                                                            <TableCell className='table-cell' align="right">{value[9]}</TableCell>
+                                                                        </TableRow>
+                                                                    ))}
+                                                                </TableBody>
+                                                                :
+                                                                ''
+                                                                }
+                                                            </Table>
+                                                        </TableContainer>
+                                                    </Grid>
+                                                </TabPanel>
+                                            )}
+                                        </SwipeableViews>
+                                    </Box>
+                                </Paper>
+                            </TabPanel>
                         </SwipeableViews>
                     </Box>
+                </Grid>
+                <Grid>
+                    
                 </Grid>
             </Grid>
         </div>
