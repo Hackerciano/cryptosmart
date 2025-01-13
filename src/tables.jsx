@@ -108,12 +108,11 @@ export default function Tables() {
             });
             tempData[i]['data'] = newValue;
         }
-        console.log(tempData);
+
 
         (mode === 0) ? setCryptosData(tempData) : setStocksData(tempData);
         (mode === 0) ? setMaxLengthCrypto(tempData[0].data.length) : setmaxLengthStocks(tempData[0].data.length);
 
-        console.log(tempData[0].data.length);
 
         setOpen(false);
     }
@@ -166,17 +165,18 @@ export default function Tables() {
     }
 
     const copyAll = (day) => {
-        let pivot = (day == 1) ? 3 : (day == 2) ? 2 : 0;
+        let pivot = (day == 1) ? 1 : (day == 2) ? 2 : 0;
+        let data = (mode === 0) ? cryptosData : stocksData;
 
         let copied = '<table><tr>';
-        cryptosData.forEach(crypto => {
-            copied = copied + `<td>${crypto.name} - ${crypto.shortName}</td>`;
-            copied = copied + `<td>${crypto.data[crypto.data.length - pivot][0]}</td>`; // Date
-            copied = copied + `<td>${crypto.data[crypto.data.length - pivot][1]}</td>`; // Open
-            copied = copied + `<td>${crypto.data[crypto.data.length - pivot][2]}</td>`; // High
-            copied = copied + `<td>${crypto.data[crypto.data.length - pivot][3]}</td>`; // Low
-            copied = copied + `<td>${crypto.data[crypto.data.length - pivot][4]}</td>`; // Close
-            copied = copied + `<td>${crypto.data[crypto.data.length - pivot][5]}</td>`; // Vol
+        data.forEach(value => {
+            copied = copied + `<td>${value.name} - ${value.shortName}</td>`;
+            copied = copied + `<td>${value.data[value.data.length - pivot][0]}</td>`; // Date
+            copied = copied + `<td>${value.data[value.data.length - pivot][1]}</td>`; // Open
+            copied = copied + `<td>${value.data[value.data.length - pivot][2]}</td>`; // High
+            copied = copied + `<td>${value.data[value.data.length - pivot][3]}</td>`; // Low
+            copied = copied + `<td>${value.data[value.data.length - pivot][4]}</td>`; // Close
+            copied = copied + `<td>${value.data[value.data.length - pivot][5]}</td>`; // Vol
 
             copied = copied + '</tr>';
         });
@@ -329,44 +329,13 @@ export default function Tables() {
                                                             </TableRow>
                                                         </TableHead>
                                                         {(cryptosData.length != 0) ?
-                                                                cryptosData.map((crypto) => (
+                                                                cryptosData.map((crypto) => {
+                                                                    let maxLengthCrypto = crypto.data.length;
+                                                                    
+                                                                    return (
                                                                         <TableBody>
                                                                             <TableRow style={{backgroundColor: '#BBE6E4'}}>
                                                                                 <TableCell colSpan={8} align='center'>{crypto.name} - {crypto.shortName}</TableCell>
-                                                                            </TableRow>
-                                                                            <TableRow className='table-row'>
-                                                                                <TableCell className='table-cell' align="right">{
-                                                                                    crypto.data[maxLengthCrypto-3][0]
-                                                                                }</TableCell>
-                                                                                <TableCell className='table-cell' align="right">{
-                                                                                    (crypto.data[maxLengthCrypto-3][1] < 1) ? crypto.data[maxLengthCrypto-3][1] : crypto.data[maxLengthCrypto-3][1].toLocaleString("en-US")
-                                                                                }</TableCell>
-                                                                                <TableCell className='table-cell' align="right">{
-                                                                                    (crypto.data[maxLengthCrypto-3][2] < 1) ? crypto.data[maxLengthCrypto-3][2] : crypto.data[maxLengthCrypto-3][2].toLocaleString("en-US")
-                                                                                }</TableCell>
-                                                                                <TableCell className='table-cell' align="right">{
-                                                                                    (crypto.data[maxLengthCrypto-3][3] < 1) ? crypto.data[maxLengthCrypto-3][3] : crypto.data[maxLengthCrypto-3][3].toLocaleString("en-US")
-                                                                                }</TableCell>
-                                                                                <TableCell className='table-cell' align="right">{
-                                                                                    (crypto.data[maxLengthCrypto-3][4] < 1) ? crypto.data[maxLengthCrypto-3][4] : crypto.data[maxLengthCrypto-3][4].toLocaleString("en-US")
-                                                                                }</TableCell>
-                                                                                <TableCell className='table-cell' align="right">{
-                                                                                    (crypto.data[maxLengthCrypto-3][5] < 1) ? crypto.data[maxLengthCrypto-3][5] : crypto.data[maxLengthCrypto-3][5].toLocaleString("en-US")
-                                                                                }</TableCell>
-                                                                                <TableCell className='table-cell' align="right">{
-                                                                                    crypto.data[maxLengthCrypto-3][9]
-                                                                                }</TableCell>
-                                                                                    {(crypto.shortName == 'NPXS') ?
-                                                                                    <TableCell className='table-cell' align="right" rowSpan={2} style={{textAlign: 'center'}}>
-                                                                                        <Button style={{display: 'block', width: '200px'}} variant='outlined' onClick={() => copyRows(crypto.data[maxLengthCrypto-2])}>Copiar 1 dia</Button>
-                                                                                        <Button style={{display: 'block', width: '200px'}} variant='outlined' onClick={() => copyRows(crypto.data[maxLengthCrypto-2], crypto.data[maxLengthCrypto-1])}>Copiar 2 dias</Button>
-                                                                                    </TableCell>
-                                                                                    :
-                                                                                    <TableCell className='table-cell' align="right" rowSpan={2} style={{textAlign: 'center'}}>
-                                                                                        <Button style={{display: 'block', width: '200px'}} variant='outlined' onClick={() => copyRows(crypto.data[maxLengthCrypto-3])}>Copiar 1 dia</Button>
-                                                                                        <Button style={{display: 'block', width: '200px'}} variant='outlined' onClick={() => copyRows(crypto.data[maxLengthCrypto-3], crypto.data[maxLengthCrypto-2])}>Copiar 2 dias</Button>
-                                                                                    </TableCell>
-                                                                                    }
                                                                             </TableRow>
                                                                             <TableRow className='table-row'>
                                                                                 <TableCell className='table-cell' align="right">{
@@ -376,23 +345,53 @@ export default function Tables() {
                                                                                     (crypto.data[maxLengthCrypto-2][1] < 1) ? crypto.data[maxLengthCrypto-2][1] : crypto.data[maxLengthCrypto-2][1].toLocaleString("en-US")
                                                                                 }</TableCell>
                                                                                 <TableCell className='table-cell' align="right">{
-                                                                                    (crypto.data[maxLengthCrypto-2][2] < 1) ? crypto.data[maxLengthCrypto-2][2] : crypto.data[maxLengthCrypto-2][1].toLocaleString("en-US")
+                                                                                    (crypto.data[maxLengthCrypto-2][2] < 1) ? crypto.data[maxLengthCrypto-2][2] : crypto.data[maxLengthCrypto-2][2].toLocaleString("en-US")
                                                                                 }</TableCell>
                                                                                 <TableCell className='table-cell' align="right">{
-                                                                                    (crypto.data[maxLengthCrypto-2][3] < 1) ? crypto.data[maxLengthCrypto-2][3] : crypto.data[maxLengthCrypto-2][1].toLocaleString("en-US")
+                                                                                    (crypto.data[maxLengthCrypto-2][3] < 1) ? crypto.data[maxLengthCrypto-2][3] : crypto.data[maxLengthCrypto-2][3].toLocaleString("en-US")
                                                                                 }</TableCell>
                                                                                 <TableCell className='table-cell' align="right">{
-                                                                                    (crypto.data[maxLengthCrypto-2][4] < 1) ? crypto.data[maxLengthCrypto-2][4] : crypto.data[maxLengthCrypto-2][1].toLocaleString("en-US")
+                                                                                    (crypto.data[maxLengthCrypto-2][4] < 1) ? crypto.data[maxLengthCrypto-2][4] : crypto.data[maxLengthCrypto-2][4].toLocaleString("en-US")
                                                                                 }</TableCell>
                                                                                 <TableCell className='table-cell' align="right">{
-                                                                                    (crypto.data[maxLengthCrypto-2][5] < 1) ? crypto.data[maxLengthCrypto-2][5] : crypto.data[maxLengthCrypto-2][1].toLocaleString("en-US")
+                                                                                    (crypto.data[maxLengthCrypto-2][5] < 1) ? crypto.data[maxLengthCrypto-2][5] : crypto.data[maxLengthCrypto-2][5].toLocaleString("en-US")
                                                                                 }</TableCell>
                                                                                 <TableCell className='table-cell' align="right">{
                                                                                     crypto.data[maxLengthCrypto-2][9]
                                                                                 }</TableCell>
+                                                                                
+                                                                                {/* Copy buttons */}
+                                                                                <TableCell className='table-cell' align="right" rowSpan={2} style={{textAlign: 'center'}}>
+                                                                                    <Button style={{display: 'block', width: '200px'}} variant='outlined' onClick={() => copyRows(crypto.data[maxLengthCrypto-1])}>Copiar 1 dia</Button>
+                                                                                    <Button style={{display: 'block', width: '200px'}} variant='outlined' onClick={() => copyRows(crypto.data[maxLengthCrypto-2], crypto.data[maxLengthCrypto-1])}>Copiar 2 dias</Button>
+                                                                                </TableCell>
+                                                                            </TableRow>
+                                                                            <TableRow className='table-row'>
+                                                                                <TableCell className='table-cell' align="right">{
+                                                                                    crypto.data[maxLengthCrypto-1][0]
+                                                                                }</TableCell>
+                                                                                <TableCell className='table-cell' align="right">{
+                                                                                    (crypto.data[maxLengthCrypto-1][1] < 1) ? crypto.data[maxLengthCrypto-1][1] : crypto.data[maxLengthCrypto-1][1].toLocaleString("en-US")
+                                                                                }</TableCell>
+                                                                                <TableCell className='table-cell' align="right">{
+                                                                                    (crypto.data[maxLengthCrypto-1][2] < 1) ? crypto.data[maxLengthCrypto-1][2] : crypto.data[maxLengthCrypto-1][2].toLocaleString("en-US")
+                                                                                }</TableCell>
+                                                                                <TableCell className='table-cell' align="right">{
+                                                                                    (crypto.data[maxLengthCrypto-1][3] < 1) ? crypto.data[maxLengthCrypto-1][3] : crypto.data[maxLengthCrypto-1][3].toLocaleString("en-US")
+                                                                                }</TableCell>
+                                                                                <TableCell className='table-cell' align="right">{
+                                                                                    (crypto.data[maxLengthCrypto-1][4] < 1) ? crypto.data[maxLengthCrypto-1][4] : crypto.data[maxLengthCrypto-1][4].toLocaleString("en-US")
+                                                                                }</TableCell>
+                                                                                <TableCell className='table-cell' align="right">{
+                                                                                    (crypto.data[maxLengthCrypto-1][5] < 1) ? crypto.data[maxLengthCrypto-1][5] : crypto.data[maxLengthCrypto-1][5].toLocaleString("en-US")
+                                                                                }</TableCell>
+                                                                                <TableCell className='table-cell' align="right">{
+                                                                                    crypto.data[maxLengthCrypto-1][9]
+                                                                                }</TableCell>
                                                                             </TableRow>
                                                                         </TableBody>
-                                                                ))
+                                                                    )
+                                                                })
                                                         :
                                                         ''
                                                         }
@@ -500,82 +499,74 @@ export default function Tables() {
                                                             </TableRow>
                                                         </TableHead>
                                                         {(stocksData.length != 0) ?
-                                                                stocksData.map((stock) => (
+                                                                stocksData.map((stock) => {
+                                                                let maxLengthStocks = stock.data.length;
+
+                                                                    return (
                                                                         <TableBody>
                                                                             <TableRow style={{backgroundColor: '#BBE6E4'}}>
                                                                                 <TableCell colSpan={8} align='center'>{stock.name} - {stock.shortName}</TableCell>
                                                                             </TableRow>
                                                                             <TableRow className='table-row'>
                                                                                 <TableCell className='table-cell' align="right">{
-                                                                                    stock.data[maxLengthStocks-3][0]
+                                                                                    stock.data[maxLengthStocks-2][0]
                                                                                 }</TableCell>
                                                                                 <TableCell className='table-cell' align="right">{
-                                                                                    (stock.data[maxLengthStocks-3][1] < 1) ? stock.data[maxLengthStocks-3][1] : stock.data[maxLengthStocks-3][1].toLocaleString("en-US")
+                                                                                    (stock.data[maxLengthStocks-2][1] < 1) ? stock.data[maxLengthStocks-2][1] : stock.data[maxLengthStocks-2][1].toLocaleString("en-US")
                                                                                 }</TableCell>
                                                                                 <TableCell className='table-cell' align="right">{
-                                                                                    (stock.data[maxLengthStocks-3][2] < 1) ? stock.data[maxLengthStocks-3][2] : stock.data[maxLengthStocks-3][2].toLocaleString("en-US")
+                                                                                    (stock.data[maxLengthStocks-2][2] < 1) ? stock.data[maxLengthStocks-2][2] : stock.data[maxLengthStocks-2][2].toLocaleString("en-US")
                                                                                 }</TableCell>
                                                                                 <TableCell className='table-cell' align="right">{
-                                                                                    (stock.data[maxLengthStocks-3][3] < 1) ? stock.data[maxLengthStocks-3][3] : stock.data[maxLengthStocks-3][3].toLocaleString("en-US")
+                                                                                    (stock.data[maxLengthStocks-2][3] < 1) ? stock.data[maxLengthStocks-2][3] : stock.data[maxLengthStocks-2][3].toLocaleString("en-US")
                                                                                 }</TableCell>
                                                                                 <TableCell className='table-cell' align="right">{
-                                                                                    (stock.data[maxLengthStocks-3][4] < 1) ? stock.data[maxLengthStocks-3][4] : stock.data[maxLengthStocks-3][4].toLocaleString("en-US")
+                                                                                    (stock.data[maxLengthStocks-2][4] < 1) ? stock.data[maxLengthStocks-2][4] : stock.data[maxLengthStocks-2][4].toLocaleString("en-US")
                                                                                 }</TableCell>
                                                                                 <TableCell className='table-cell' align="right">{
-                                                                                    (stock.data[maxLengthStocks-3][5] < 1) ? stock.data[maxLengthStocks-3][5] : stock.data[maxLengthStocks-3][5].toLocaleString("en-US")
+                                                                                    (stock.data[maxLengthStocks-2][5] < 1) ? stock.data[maxLengthStocks-2][5] : stock.data[maxLengthStocks-2][5].toLocaleString("en-US")
                                                                                 }</TableCell>
                                                                                 <TableCell className='table-cell' align="right">{
-                                                                                    stock.data[maxLengthStocks-3][9]
+                                                                                    stock.data[maxLengthStocks-2][9]
                                                                                 }</TableCell>
                                                                                     {(stock.shortName == 'NPXS') ?
                                                                                     <TableCell className='table-cell' align="right" rowSpan={2} style={{textAlign: 'center'}}>
-                                                                                        <Button style={{display: 'block', width: '200px'}} variant='outlined' onClick={() => copyRows(stock.data[maxLengthStocks-2])}>Copiar 1 dia</Button>
-                                                                                        <Button style={{display: 'block', width: '200px'}} variant='outlined' onClick={() => copyRows(stock.data[maxLengthStocks-2], stock.data[maxLengthStocks-1])}>Copiar 2 dias</Button>
+                                                                                        <Button style={{display: 'block', width: '200px'}} variant='outlined' onClick={() => copyRows(stock.data[maxLengthStocks-1])}>Copiar 1 dia</Button>
+                                                                                        <Button style={{display: 'block', width: '200px'}} variant='outlined' onClick={() => copyRows(stock.data[maxLengthStocks-1], stock.data[maxLengthStocks-1])}>Copiar 2 dias</Button>
                                                                                     </TableCell>
                                                                                     :
                                                                                     <TableCell className='table-cell' align="right" rowSpan={2} style={{textAlign: 'center'}}>
-                                                                                        <Button style={{display: 'block', width: '200px'}} variant='outlined' onClick={() => copyRows(stock.data[maxLengthStocks-3])}>Copiar 1 dia</Button>
-                                                                                        <Button style={{display: 'block', width: '200px'}} variant='outlined' onClick={() => copyRows(stock.data[maxLengthStocks-3], stock.data[maxLengthStocks-2])}>Copiar 2 dias</Button>
+                                                                                        <Button style={{display: 'block', width: '200px'}} variant='outlined' onClick={() => copyRows(stock.data[maxLengthStocks-2])}>Copiar 1 dia</Button>
+                                                                                        <Button style={{display: 'block', width: '200px'}} variant='outlined' onClick={() => copyRows(stock.data[maxLengthStocks-2], stock.data[maxLengthStocks-2])}>Copiar 2 dias</Button>
                                                                                     </TableCell>
                                                                                     }
                                                                             </TableRow>
                                                                             <TableRow className='table-row'>
                                                                                 <TableCell className='table-cell' align="right">{
-                                                                                    (stock.data[maxLengthStocks-2] !== undefined) ? stock.data[maxLengthStocks-2][0] : stock.data[maxLengthStocks-4][0]
+                                                                                    stock.data[maxLengthStocks-1][0]
                                                                                 }</TableCell>
                                                                                 <TableCell className='table-cell' align="right">{
-                                                                                    (stock.data[maxLengthStocks-2] !== undefined) ?
-                                                                                    (stock.data[maxLengthStocks-2][1] < 1) ? stock.data[maxLengthStocks-2][1] : stock.data[maxLengthStocks-2][1].toLocaleString("en-US")
-                                                                                    : (stock.data[maxLengthStocks-4][1] < 1) ? stock.data[maxLengthStocks-4][1] : stock.data[maxLengthStocks-4][1].toLocaleString("en-US")
+                                                                                    (stock.data[maxLengthStocks-1][1] < 1) ? stock.data[maxLengthStocks-1][1] : stock.data[maxLengthStocks-1][1].toLocaleString("en-US")
                                                                                 }</TableCell>
                                                                                 <TableCell className='table-cell' align="right">{
-                                                                                    (stock.data[maxLengthStocks-2] !== undefined) ?
-                                                                                    (stock.data[maxLengthStocks-2][2] < 1) ? stock.data[maxLengthStocks-2][2] : stock.data[maxLengthStocks-2][1].toLocaleString("en-US")
-                                                                                    : (stock.data[maxLengthStocks-4][2] < 1) ? stock.data[maxLengthStocks-4][2] : stock.data[maxLengthStocks-4][1].toLocaleString("en-US")
+                                                                                    (stock.data[maxLengthStocks-1][2] < 1) ? stock.data[maxLengthStocks-1][2] : stock.data[maxLengthStocks-1][1].toLocaleString("en-US")
                                                                                 }</TableCell>
                                                                                 <TableCell className='table-cell' align="right">{
-                                                                                    (stock.data[maxLengthStocks-2] !== undefined) ?
-                                                                                    (stock.data[maxLengthStocks-2][3] < 1) ? stock.data[maxLengthStocks-2][3] : stock.data[maxLengthStocks-2][1].toLocaleString("en-US")
-                                                                                    : (stock.data[maxLengthStocks-4][3] < 1) ? stock.data[maxLengthStocks-4][3] : stock.data[maxLengthStocks-4][1].toLocaleString("en-US")
+                                                                                    (stock.data[maxLengthStocks-1][3] < 1) ? stock.data[maxLengthStocks-1][3] : stock.data[maxLengthStocks-1][1].toLocaleString("en-US")
                                                                                 }</TableCell>
                                                                                 <TableCell className='table-cell' align="right">{
-                                                                                    (stock.data[maxLengthStocks-2] !== undefined) ?
-                                                                                    (stock.data[maxLengthStocks-2][4] < 1) ? stock.data[maxLengthStocks-2][4] : stock.data[maxLengthStocks-2][1].toLocaleString("en-US")
-                                                                                    : (stock.data[maxLengthStocks-4][4] < 1) ? stock.data[maxLengthStocks-4][4] : stock.data[maxLengthStocks-4][1].toLocaleString("en-US")
+                                                                                    (stock.data[maxLengthStocks-1][4] < 1) ? stock.data[maxLengthStocks-1][4] : stock.data[maxLengthStocks-1][1].toLocaleString("en-US")
                                                                                 }</TableCell>
                                                                                 <TableCell className='table-cell' align="right">{
-                                                                                    (stock.data[maxLengthStocks-2] !== undefined) ?
-                                                                                    (stock.data[maxLengthStocks-2][5] < 1) ? stock.data[maxLengthStocks-2][5] : stock.data[maxLengthStocks-2][1].toLocaleString("en-US")
-                                                                                    : (stock.data[maxLengthStocks-4][5] < 1) ? stock.data[maxLengthStocks-4][5] : stock.data[maxLengthStocks-4][1].toLocaleString("en-US")
+                                                                                    (stock.data[maxLengthStocks-1][5] < 1) ? stock.data[maxLengthStocks-1][5] : stock.data[maxLengthStocks-1][1].toLocaleString("en-US")
                                                                                 }</TableCell>
                                                                                 <TableCell className='table-cell' align="right">{
-                                                                                    (stock.data[maxLengthStocks-2] !== undefined) ?
-                                                                                    stock.data[maxLengthStocks-2][9]
-                                                                                    : stock.data[maxLengthStocks-4][9]
+                                                                                    stock.data[maxLengthStocks-1][9]
                                                                                 }</TableCell>
                                                                             </TableRow>
                                                                         </TableBody>
-                                                                ))
+                                                                    )
+                                                                })
                                                         :
                                                         ''
                                                         }
