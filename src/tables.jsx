@@ -84,16 +84,12 @@ export default function Tables() {
         setValue(index);
     };
 
-    const handleChangeIndexMode = (index) => {
-        setMode(index);
-    };
-
-    
+    // Valid for investing.com
     const updateCryptos = async () => {
         // Update crypto currencies
         setOpen(true);
         // Check for mode
-        let tempData = (mode === 0) ? cryptos.cryptos : stocks.stocks;
+        let tempData = cryptos.cryptos;
         for (let i = 0; i < tempData.length; i++) {
             const pid = tempData[i];
             const pidData = await callInvesting(pid.pairID, 'P1M', 'P1D', 120);
@@ -110,11 +106,82 @@ export default function Tables() {
         }
 
 
-        (mode === 0) ? setCryptosData(tempData) : setStocksData(tempData);
-        (mode === 0) ? setMaxLengthCrypto(tempData[0].data.length) : setmaxLengthStocks(tempData[0].data.length);
-
+        setCryptosData(tempData);
+        setMaxLengthCrypto(tempData[0].data.length);
 
         setOpen(false);
+    }
+
+    // Valid for yahoo finance
+    const updateStocks = async () => {
+        // Update stock currencies
+        setOpen(true);
+        let tempData = stocks.stocks;
+        for (let i = 0; i < tempData.length; i++) {
+            const yahooFinanceCode = tempData[i].yahooFinanceCode;
+            // Obtain UNIX timestamp of today with a time of 00:00:00
+            let today = new Date();
+            today.setHours(0, 0, 0, 0);
+            let todayUnix = Math.floor(today.getTime() / 1000);
+            // Obtain UNIX timestamp of today - 1 month with a time of 00:00:00
+            let oneMonthAgo = new Date();
+            oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+            oneMonthAgo.setHours(0, 0, 0, 0);
+            let oneMonthAgoUnix = Math.floor(oneMonthAgo.getTime() / 1000);
+            // Call Yahoo Finance API
+            const pidData = await callYahooFinance(yahooFinanceCode, oneMonthAgoUnix, todayUnix);
+            // Process response
+            let newValue = [];
+            const timestamps = pidData.data.chart.result[0].timestamp;
+            const quotes = pidData.data.chart.result[0].indicators.quote[0];
+
+            for (let j = 0; j < timestamps.length; j++) {
+                let row = [
+                    timestamps[j] * 1000, // Convert to milliseconds
+                    quotes.open[j],
+                    quotes.high[j],
+                    quotes.low[j],
+                    quotes.close[j],
+                    quotes.volume[j],
+                    0 // Placeholder for suggestion
+                ];
+                newValue.push(row);
+            }
+
+            // Iterate between each value of date
+            newValue.forEach((value, i) => {
+                // Format date
+                value[0] = getDate(value[0]);
+                // Calculate suggestion
+                let suggestion = calculateSuggestion(newValue, i);
+                value[value.length] = suggestion;
+            });
+
+            tempData[i]['data'] = newValue;
+        }
+
+        setStocksData(tempData);
+        setmaxLengthStocks(tempData[0].data.length);
+        setOpen(false);
+    }
+
+    const callYahooFinance = (symbol, start, end) => {
+        return axios({
+            method: 'GET',
+            url: `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}`,
+            params: {
+                period1: start,
+                period2: end,
+                interval: '1d',
+                // includePrePost: false,
+                events: 'div,splits',
+                formatted: true,
+                includeAdjustedClose: true,
+                useYfid: true,
+                lang: 'en-US',
+                region: 'US'
+            },
+        });
     }
 
     const callInvesting = (pairId, period, interval, pointscount) => {
@@ -247,7 +314,9 @@ export default function Tables() {
                         <h3>Cryptosmart Web v1.3.0</h3>
                     </Grid>
                     <Grid item xs={3}>
-                        <Button variant="outlined" style={{ marginTop: '50px' }} onClick={() => updateCryptos()}>Actualizar datos</Button>
+                        <Button variant="outlined" style={{ marginTop: '50px' }} onClick={() => {
+                            (mode === 0) ? updateCryptos() : updateStocks();
+                        }}>Actualizar datos</Button>
                     </Grid>
                     <Grid item xs={3}>
                         <Button disabled={cryptosData.length == 0} variant="outlined" style={{ marginTop: '50px' }} onClick={() => copyAll(1)}>Copiar todo dia 1</Button>
