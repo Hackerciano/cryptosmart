@@ -177,6 +177,10 @@ export default function Tables() {
                 lang: 'en-US',
                 region: 'US'
             },
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Origin' : 'http://localhost:3000'
+            }
         });
     }
 
