@@ -164,12 +164,11 @@ export default function Tables() {
     const callYahooFinance = (symbol, start, end) => {
         return axios({
             method: 'GET',
-            url: `https://cors-anywhere-cs.vercel.app/https://query1.finance.yahoo.com/v8/finance/chart/${symbol}`,
+            url: `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}`,
             params: {
                 period1: start,
                 period2: end,
                 interval: '1d',
-                // includePrePost: false,
                 events: 'div,splits',
                 formatted: true,
                 includeAdjustedClose: true,
