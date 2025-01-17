@@ -179,7 +179,7 @@ export default function Tables() {
             },
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
-                'Origin' : 'http://localhost:3000'
+                'Origin': 'https://hackerciano.github.io'
             }
         });
     }
