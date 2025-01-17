@@ -164,7 +164,7 @@ export default function Tables() {
     const callYahooFinance = (symbol, start, end) => {
         return axios({
             method: 'GET',
-            url: `http://localhost:8080/https://query1.finance.yahoo.com/v8/finance/chart/${symbol}`,
+            url: `https://cors-anywhere-8xsp3f077-hackercianos-projects.vercel.app/https://query1.finance.yahoo.com/v8/finance/chart/${symbol}`,
             params: {
                 period1: start,
                 period2: end,
