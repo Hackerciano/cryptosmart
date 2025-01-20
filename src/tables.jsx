@@ -163,23 +163,13 @@ export default function Tables() {
 
     const callYahooFinance = (symbol, start, end) => {
         return axios({
-            method: 'GET',
-            url: `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}`,
-            params: {
-                period1: start,
-                period2: end,
-                interval: '1d',
-                events: 'div,splits',
-                formatted: true,
-                includeAdjustedClose: true,
-                useYfid: true,
-                lang: 'en-US',
-                region: 'US'
+            method: 'POST',
+            url: `https://sculptstudio.mx/yahoo/getStockData`,
+            data: {
+                "symbol" : symbol,
+                "start" : start,
+                "end" : end
             },
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'Origin': 'https://hackerciano.github.io'
-            }
         });
     }
 
