@@ -190,7 +190,7 @@ export default function Tables() {
         d.setUTCMilliseconds(unixEpoch);
         d = d.toISOString().split('T')[0];
         const [year, month, day] = d.split('-');
-        const result = [day, month, year].join('-');
+        const result = [month, day, year].join('/');
         return result;
     }
 
